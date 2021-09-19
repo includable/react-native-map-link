@@ -8,9 +8,10 @@ export const isIOS = Platform.OS === 'ios';
 
 export function generatePrefixes(options) {
   return {
-    'apple-maps': isIOS ? 'maps://' : 'applemaps://',
+    'apple-maps': isIOS ? 'http://maps.apple.com' : 'applemaps://',
     'google-maps': prefixForGoogleMaps(options.alwaysIncludeGoogle),
     citymapper: 'citymapper://',
+    // uber: isIOS ? 'https://m.uber.com/ul/' : 'uber://',
     uber: 'uber://',
     lyft: 'lyft://',
     transit: 'transit://',
@@ -34,7 +35,8 @@ export function generatePrefixes(options) {
 export function prefixForGoogleMaps(alwaysIncludeGoogle) {
   return isIOS && !alwaysIncludeGoogle
     ? 'comgooglemaps://'
-    : 'https://www.google.com/maps/';
+    // : 'https://www.google.com/maps/';
+    : 'https://maps.google.com/';
 }
 
 export function generateTitles(titles) {

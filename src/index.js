@@ -18,6 +18,8 @@ import {
  * @param {{
  *     latitude: number | string,
  *     longitude: number | string,
+ *     fromAddress: string | undefined,
+ *     toAddress: string | undefined,
  *     sourceLatitude: number | undefined | null,
  *     sourceLongitude: number | undefined | null,
  *     alwaysIncludeGoogle: boolean | undefined | null,
@@ -32,6 +34,7 @@ import {
  *     appTitles: object | undefined | null
  *     naverCallerName: string | undefined
  *     directionsMode: 'car' | 'walk' | 'public-transport' | 'bike' | undefined
+ *     tintColor: string | undefined
  * }} options
  */
 export async function showLocation(options) {
@@ -49,6 +52,9 @@ export async function showLocation(options) {
     sourceLng = parseFloat(options.sourceLongitude);
     sourceLatLng = `${sourceLat},${sourceLng}`;
   }
+
+  const fromAddress = options.fromAddress;
+  const toAddress = options.toAddress;
 
   const lat = parseFloat(options.latitude);
   const lng = parseFloat(options.longitude);
@@ -81,6 +87,7 @@ export async function showLocation(options) {
       appsWhiteList,
       prefixes,
       appTitles: generateTitles(options.appTitles),
+      tintColor: options.tintColor,
     });
   }
 
@@ -144,11 +151,14 @@ export async function showLocation(options) {
       if (useSourceDestiny || options.directionsMode) {
         // Use "dir" as this will open up directions
         url = 'https://www.google.com/maps/dir/?api=1';
+
+        const toAddressQuery = toAddress ? encodeURI(toAddress) : '';
+
         url += sourceLatLng ? `&origin=${sourceLatLng}` : '';
         if (!options.googleForceLatLon && title) {
-          url += `&destination=${encodedTitle}`;
+          url += `&destination=${toAddressQuery || encodedTitle}`;
         } else {
-          url += `&destination=${latlng}`;
+          url += `&destination=${toAddressQuery || latlng}`;
         }
 
         url += options.googlePlaceId
@@ -241,6 +251,11 @@ export async function showLocation(options) {
       }
       break;
     case 'yandex-taxi':
+      if (useSourceDestiny) {
+        url = `${prefixes['yandex-taxi']}route?start-lat=${sourceLat}&end-lat=${lat}&start-lon=${sourceLng}&end-lon=${lng}&appmetrica_tracking_id=1178268795219780156`;
+        break;
+      }
+
       url = `${prefixes['yandex-taxi']}route?end-lat=${lat}&end-lon=${lng}&appmetrica_tracking_id=1178268795219780156`;
 
       break;
@@ -288,10 +303,13 @@ export async function showLocation(options) {
       }
       break;
     case 'dgis':
-      url = `${prefixes.dgis}routeSearch/to/${lng},${lat}/go`;
+      const toAddressQuery = toAddress ? `|${toAddress}` : '';
+      const fromAddressQuery = fromAddress ? `|${fromAddress}` : '';
+
+      url = `${prefixes.dgis}routeSearch/to/${lng},${lat}|${toAddressQuery}/go`;
 
       if (useSourceDestiny) {
-        url = `${prefixes.dgis}routeSearch/to/${lng},${lat}/from/${sourceLng},${sourceLat}/go`;
+        url = `${prefixes.dgis}routeSearch/to/${lng},${lat}|${toAddressQuery}/from/${sourceLng},${sourceLat}|${fromAddressQuery}/go`;
       }
       break;
     case 'liftago':

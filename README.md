@@ -225,6 +225,8 @@ import {showLocation} from 'react-native-map-link';
 showLocation({
   latitude: 38.8976763,
   longitude: -77.0387185,
+  fromAddress: 'address 1', // optionally specify name starting location for directions
+  toAddress: 'address 2', // optionally specify name ending location for directions
   sourceLatitude: -8.0870631, // optionally specify starting location for directions
   sourceLongitude: -34.8941619, // not optional if sourceLatitude is specified
   title: 'The White House', // optional
@@ -239,6 +241,7 @@ showLocation({
   appTitles: { 'google-maps': 'My custom Google Maps title' }, // optionally you can override default app titles
   app: 'uber',  // optionally specify specific app to use
   directionsMode: 'walk', // optional, accepted values are 'car', 'walk', 'public-transport' or 'bike'
+  tintColor: 'red', // optional IOS only tintColor for Action Sheet;
 });
 ```
 

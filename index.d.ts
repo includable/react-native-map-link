@@ -43,9 +43,12 @@ interface SharedOptions {
 interface Options extends SharedOptions {
   latitude: number | string;
   longitude: number | string;
+  /** optionally you can enter a full address that will be queried against the map app's API and return the initial results if not the actual matched result. */
+  /** latitude and longitude will be ignored if the address field is set */
+  address?: string | undefined;
   /** optionally specify starting location for directions */
   sourceLatitude?: number;
-  /** not optional if `sourceLatitude` is specified */
+  /** required if `sourceLatitude` is specified */
   sourceLongitude?: number;
   /** optional, true will always add Google Maps to iOS and open in Safari, even if app is not installed (default: false) */
   alwaysIncludeGoogle?: boolean;

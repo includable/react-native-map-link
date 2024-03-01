@@ -226,8 +226,9 @@ showLocation({
   latitude: 38.8976763,
   longitude: -77.0387185,
   sourceLatitude: -8.0870631, // optionally specify starting location for directions
-  sourceLongitude: -34.8941619, // not optional if sourceLatitude is specified
-  title: 'The White House', // optional
+  sourceLongitude: -34.8941619, // required if sourceLatitude is specified
+  address: '', // optional but can replace latitude and longitude if needed
+  title: 'The White House', // optional 
   googleForceLatLon: false, // optionally force GoogleMaps to use the latlon for the query instead of the title
   googlePlaceId: 'ChIJGVtI4by3t4kRr51d_Qm_x58', // optionally specify the google-place-id
   alwaysIncludeGoogle: true, // optional, true will always add Google Maps to iOS and open in Safari, even if app is not installed (default: false)
@@ -242,11 +243,34 @@ showLocation({
 });
 ```
 
+Alternatively you can specify the `address` field and leave the latitude and longitude properties as empty strings 
+
+```js
+import {showLocation} from 'react-native-map-link';
+
+showLocation({
+  latitude: '',
+  longitude: '',
+  address: '1600 Pennsylvania Avenue NW, Washington, DC 20500', // Required if replacing latitude and longitude
+  title: 'The White House', // optional
+  googleForceLatLon: false, // optionally force GoogleMaps to use the latlon for the query instead of the title
+  alwaysIncludeGoogle: true, // optional, true will always add Google Maps to iOS and open in Safari, even if app is not installed (default: false)
+  dialogTitle: 'This is the dialog Title', // optional (default: 'Open in Maps')
+  dialogMessage: 'This is the amazing dialog Message', // optional (default: 'What app would you like to use?')
+  cancelText: 'This is the cancel button text', // optional (default: 'Cancel')
+  appsWhiteList: ['google-maps'], // optionally you can set which apps to show (default: will show all supported apps installed on device)
+  naverCallerName: 'com.example.myapp', // to link into Naver Map You should provide your appname which is the bundle ID in iOS and applicationId in android.
+  appTitles: { 'google-maps': 'My custom Google Maps title' }, // optionally you can override default app titles
+  app: 'uber',  // optionally specify specific app to use
+});
+```
+
 Notes:
 
 - The `sourceLatitude` / `sourceLongitude` options only work if you specify both. Currently supports all apps except Waze.
 - `directionsMode` works on google-maps and apple-maps (on the latter, `bike` mode will not work). Without setting it, the app will decide based on his own settings.
 - If you set `directionsMode` but do not set `sourceLatitude` and `sourceLongitude`, google-maps and apple-maps will still enter directions mode, and use the current location as starting point.
+- If you want to query an address instead of passing the `latitude` and `longitude` fields, you can do this by leaving both of the required fields as empty strings and provide a full address to be queried.
 
 ### Or
 
@@ -272,6 +296,7 @@ const Demo = () => {
       const result = await getApps({
         latitude: 38.8976763,
         longitude: -77.0387185,
+        address: '1600 Pennsylvania Avenue NW, Washington, DC 20500', // optional 
         title: 'The White House', // optional
         googleForceLatLon: false, // optionally force GoogleMaps to use the latlon for the query instead of the title
         alwaysIncludeGoogle: true, // optional, true will always add Google Maps to iOS and open in Safari, even if app is not installed (default: false)

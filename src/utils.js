@@ -176,6 +176,7 @@ export function askAppChoice({
  * @param {{
  *     latitude: number | string,
  *     longitude: number | string,
+ *     address: string | undefined | null,
  *     sourceLatitude: number | undefined | null,
  *     sourceLongitude: number | undefined | null,
  *     googleForceLatLon: boolean | undefined | null,
@@ -198,6 +199,15 @@ export function checkOptions(options, prefixes) {
   if (!('latitude' in options) || !('longitude' in options)) {
     throw new MapsException(
       'First parameter of `showLocation` should contain object with at least keys `latitude` and `longitude`.',
+    );
+  }
+  if (
+    'address' in options &&
+    options.address &&
+    typeof options.address !== 'string'
+  ) {
+    throw new MapsException(
+      'Option `address` should be of type `string`.',
     );
   }
   if (
@@ -244,7 +254,7 @@ export function checkOptions(options, prefixes) {
   }
 }
 
-class MapsException {
+export class MapsException {
   constructor(message) {
     this.message = message;
     this.name = 'MapsException';
